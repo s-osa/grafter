@@ -1,6 +1,7 @@
 class Array
   def graft(args={})
-    branch, operator = args[:branch].to_sym, (args[:operator].to_sym || :===)
+    branch   = args[:branch].to_sym
+    operator = args[:operator] && args[:operator].to_sym || "===".to_sym
     check_response_in_graft(branch,operator)
 
     base_trees = self
@@ -11,6 +12,8 @@ class Array
         base_trees.delete(graftable_tree)
       end
     end
+
+    base_trees.each{|base_tree| yield(base_tree.send(branch)) } if block_given?
     base_trees
   end
 
